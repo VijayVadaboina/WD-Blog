@@ -2,7 +2,12 @@ const express = require("express");
 const router = express.Router();
 
 router.get("", (req, res) => {
-  res.send("Hello world");
+  const local = {
+    title: "nodejs blog",
+    description: " this is blog created using node js",
+  };
+
+  res.render("index", { local });
 });
 
 module.exports = router;
