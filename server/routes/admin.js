@@ -56,8 +56,10 @@ router.get("/dashboard", authMiddleware, async (req, res) => {
     const local = { title: "Node JS Blog" };
 
     const data = await postModel.find();
-    res.render("admin/dashboard", { local, data });
-  } catch (err) {}
+    res.render("admin/dashboard", { local, data, layout: adminLayout });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 router.post("/register", async (req, res) => {
@@ -81,4 +83,75 @@ router.post("/register", async (req, res) => {
   }
 });
 
+router.get("/add-post", authMiddleware, async (req, res) => {
+  try {
+    const local = { title: "add post" };
+
+    res.render("admin/add-post", { local, layout: adminLayout });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+router.post("/add-post", authMiddleware, async (req, res) => {
+  try {
+    try {
+      const { title, body } = req.body;
+      await postModel.create({
+        title,
+        body,
+      });
+      res.redirect("/dashboard");
+    } catch (err) {
+      console.log(err);
+    }
+
+    res.render("admin/add-post", { layout: adminLayout });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+router.get("/edit-post/:id", authMiddleware, async (req, res) => {
+  try {
+    const local = { title: " editing the post" };
+    const data = await postModel.findOne({ _id: req.params.id });
+
+    res.render("admin/edit-post", {
+      data,
+      layout: adminLayout,
+      local,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+router.put("/edit-post/:id", authMiddleware, async (req, res) => {
+  try {
+    await postModel.findByIdAndUpdate(req.params.id, {
+      title: req.body.title,
+      body: req.body.body,
+      updatedAt: Date.now(),
+    });
+    res.redirect(`/edit-post/${req.params.id}`);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+router.delete("/delete-post/:id", authMiddleware, async (req, res) => {
+  try {
+    await postModel.deleteOne({ _id: req.params.id });
+    res.redirect("/dashboard");
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+router.get("/logout", (req, res) => {
+  res.clearCookie("token");
+  //res.json({ message: "Logout Successful" });
+  res.redirect("/");
+});
 module.exports = router;

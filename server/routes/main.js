@@ -25,6 +25,7 @@ router.get("", async (req, res) => {
       data,
       current: page,
       nextPage: hasNextPage ? nextPage : null,
+      currentRoute: "/",
     });
   } catch (err) {
     console.log(err);
@@ -34,13 +35,13 @@ router.get("", async (req, res) => {
 router.get("/post/:id", async (req, res) => {
   try {
     const local = {
-      title: data.title,
+      title: " Post contents",
       description: " simple Blog created with node js , express & mongo DB",
     };
 
     let postId = req.params.id;
     const data = await postModel.findById({ _id: postId });
-    res.render("post", { local, data });
+    res.render("post", { local, data, currentRoute: `/post/${postId}` });
   } catch (err) {
     console.log(err);
   }
@@ -66,6 +67,10 @@ router.post("/search", async (req, res) => {
   } catch (err) {
     console.log(err);
   }
+});
+
+router.get("/about", (req, res) => {
+  res.render("about", { currentRoute: "/about" });
 });
 
 module.exports = router;
