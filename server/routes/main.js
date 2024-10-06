@@ -46,4 +46,26 @@ router.get("/post/:id", async (req, res) => {
   }
 });
 
+router.post("/search", async (req, res) => {
+  try {
+    const local = {
+      title: "search",
+    };
+    let searchTerm = req.body.searchTerm;
+    const searchNoSpecialChar = searchTerm.replace(/[^a-zA-Z0-9]/g, "");
+    const data = await postModel.find({
+      $or: [
+        { title: { $regex: new RegExp(searchNoSpecialChar, "i") } },
+        { body: { $regex: new RegExp(searchNoSpecialChar, "i") } },
+      ],
+    });
+    res.render("search", {
+      local,
+      data,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 module.exports = router;

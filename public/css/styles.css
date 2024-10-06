@@ -17,7 +17,7 @@ body {
   color: var(--black);
   font-size: var(--font-size-base);
   background-color: #faf5ee;
-  background-image: url("/public/img/img-noise-361x370.png");
+  background-image: url("/img/img-noise-361x370.png");
   margin: 0;
 }
 
@@ -273,6 +273,7 @@ img {
   right: 0;
   color: var(--gray-light);
   padding: 15;
+  cursor: pointer;
 }
 /* Dashboard Admin */
 .admin-title {
